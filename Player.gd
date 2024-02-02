@@ -7,6 +7,9 @@ extends RigidBody3D
 @onready var explosionSound := $ExplosionAudio
 @onready var successAudio := $SuccessAudio
 @onready var rocketAudio := $RocketAudio
+@onready var boosterParticles = $BoosterParticles
+@onready var rightBoosterParticles = $RightBoosterParticles
+@onready var leftBoosterParticles = $LeftBoosterParticles
 
 var isTransitioning := false
 
@@ -14,16 +17,24 @@ var isTransitioning := false
 func _process(delta: float) -> void:
 	if Input.is_action_pressed("boost"):
 		apply_central_force(basis.y * delta * thrust)
+		boosterParticles.emitting = true
 		if !rocketAudio.playing:
 			rocketAudio.play()
 	else:
+		boosterParticles.emitting = false
 		rocketAudio.stop()
 
 	if Input.is_action_pressed("rotateLeft"):
 		apply_torque(Vector3(0.0, 0.0, torqueThrust * delta))
+		rightBoosterParticles.emitting = true
+	else:
+		rightBoosterParticles.emitting = false
 
 	if Input.is_action_pressed("rotateRight"):
 		apply_torque(Vector3(0.0, 0.0, -torqueThrust * delta))
+		leftBoosterParticles.emitting = true
+	else:
+		leftBoosterParticles.emitting = false
 
 
 func _on_body_entered(body: Node) -> void:
