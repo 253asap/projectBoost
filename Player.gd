@@ -16,6 +16,8 @@ extends RigidBody3D
 var isTransitioning := false
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
+func _physics_process(delta):
+	pass
 func _process(delta: float) -> void:
 	# if the player is pressing "escape" then quit the game
 	if Input.is_action_pressed("menu"):
