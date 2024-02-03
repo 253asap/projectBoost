@@ -7,14 +7,19 @@ extends RigidBody3D
 @onready var explosionSound := $ExplosionAudio
 @onready var successAudio := $SuccessAudio
 @onready var rocketAudio := $RocketAudio
-@onready var boosterParticles = $BoosterParticles
-@onready var rightBoosterParticles = $RightBoosterParticles
-@onready var leftBoosterParticles = $LeftBoosterParticles
-
+@onready var boosterParticles := $BoosterParticles
+@onready var rightBoosterParticles := $RightBoosterParticles
+@onready var leftBoosterParticles := $LeftBoosterParticles
+@onready var explosionParticles := $ExplosionParticles
+@onready var successParticles := $SuccessParticles
+ 
 var isTransitioning := false
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	# if the player is pressing "escape" then quit the game
+	if Input.is_action_pressed("menu"):
+		get_tree().change_scene_to_file("res://menu.tscn")
 	if Input.is_action_pressed("boost"):
 		apply_central_force(basis.y * delta * thrust)
 		boosterParticles.emitting = true
@@ -46,11 +51,13 @@ func _on_body_entered(body: Node) -> void:
 		
 func crashSequence() -> void:
 	print("You lose")
+	explosionParticles.emitting = true
 	explosionSound.play()
 	tweenTrans(get_tree().reload_current_scene)
 
 func completeLevel(next_level_file: String) -> void:
 	print("winner winner chicken dinner")
+	successParticles.emitting = true
 	successAudio.play()
 	if next_level_file == "NA":
 		tweenTrans(get_tree().quit)
